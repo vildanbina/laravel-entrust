@@ -24,13 +24,10 @@ trait EntrustUserTrait
     public function cachedRoles()
     {
         $userPrimaryKey = $this->primaryKey;
-        $cacheKey = 'entrust_roles_for_user_'.$this->$userPrimaryKey;
-        if(Cache::getStore() instanceof TaggableStore) {
-            return Cache::tags(Config::get('entrust.role_user_table'))->remember($cacheKey, Config::get('cache.ttl'), function () {
-                return $this->roles()->get();
-            });
-        }
-        else return $this->roles()->get();
+        $cacheKey = 'entrust_roles_for_user_' . $this->$userPrimaryKey;
+        return Cache::rememberForever($cacheKey, function () {
+            return $this->roles()->get();
+        });
     }
 
     /**
